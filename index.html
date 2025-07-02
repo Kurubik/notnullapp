@@ -39,7 +39,7 @@
         "name": "Sergejs Skuratovs",
         "email": "wkuratov@gmail.com",
         "jobTitle": "Web Developer",
-        "description": "Can make like anything",
+        "description": "Can make like anything (Online Casino/Platform development)",
         "sameAs": [
             "https://t.me/wkuratov",
             "https://www.instagram.com/symbakot/"
@@ -552,7 +552,7 @@
         </header>
 
         <div class="error-box" onclick="handleErrorBoxClick(event)">
-            <h2 class="error-title">Uncaught TypeError: Cannot read property 'joke' of null</h2>
+            <h2 class="error-title">Uncaught TypeError: Cannot read property 'null' of null</h2>
             <div class="stack-trace">
                 <div><span class="line-number">1</span> at Object.&lt;anonymous&gt; (life.js:42:13)</div>
                 <div><span class="line-number">2</span> at Module._compile (internal/modules/cjs/loader.js:1063:30)</div>
@@ -664,7 +664,7 @@
             <p>Cat's IG: <a href="https://www.instagram.com/symbakot/" target="_blank">@symbakot</a> 🐈</p>
             <br>
             <p style="color: var(--text-secondary); font-size: 0.9rem;">
-                <em>"I can make like... anything!"</em><br>
+                <em>"I can make like... anything! (Online Casino/Platform development)"</em><br>
                 <small>* Except this error go away. It's a feature.</small>
             </p>
         </div>
@@ -737,7 +737,7 @@
 %c📧 wkuratov@gmail.com
 💬 Telegram: @wkuratov
 🐈 Cat IG: instagram.com/symbakot
-🚀 "I can make like... anything!"`,
+🚀 "I can make like... anything! (Online Casino/Platform development)"`,
                 'color: #00ff88; font-size: 8px; line-height: 1',
                 'color: #fff; font-size: 14px; line-height: 1.5'
                 );
@@ -795,14 +795,6 @@
             document.getElementById('errorPopup').classList.remove('active');
         }
 
-        // Close popup when clicking outside
-        document.addEventListener('click', (e) => {
-            const popup = document.getElementById('errorPopup');
-            if (popup.classList.contains('active') && !popup.contains(e.target) && !e.target.classList.contains('secret-trigger')) {
-                closeSecretError();
-            }
-        });
-
         // Triple tap easter egg for mobile
         let tapCount = 0;
         let tapTimer;
@@ -818,7 +810,7 @@
 
             tapTimer = setTimeout(() => {
                 tapCount = 0;
-            }, 500);
+            }, 1000);
         });
 
         // Error box click handler (mobile easter egg)
@@ -854,7 +846,7 @@
         console.log('%c Email: wkuratov@gmail.com ', 'color: #888;');
         console.log('%c Telegram: @wkuratov ', 'color: #888;');
         console.log('%c Cat\'s Instagram: https://www.instagram.com/symbakot/ 🐈 ', 'color: #888;');
-        console.log('%c\n"I can make like... anything*" ', 'color: #ffaa00; font-style: italic;');
+        console.log('%c\n"I can make like... anything* (Online Casino/Platform development)" ', 'color: #ffaa00; font-style: italic;');
         console.log('%c *Except convince your PM that we don\'t need that feature ', 'color: #666; font-size: 10px;');
 
         // Secret function for the truly curious
@@ -864,7 +856,7 @@
                 email: "wkuratov@gmail.com",
                 telegram: "@wkuratov",
                 catInstagram: "https://www.instagram.com/symbakot/",
-                status: "Can make like anything",
+                status: "Can make like anything (Online Casino/Platform development)",
                 disclaimer: "Results may vary. Side effects include clean code and happy users."
             };
             console.table(contact);

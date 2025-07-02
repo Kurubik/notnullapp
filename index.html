@@ -9,17 +9,17 @@
     ╔══════════════════════════════════════════════════════════════╗
     ║  Hey there, curious developer! 👋                            ║
     ║                                                              ║
-    ║  Looking for the wizard behind this madness?                ║
+    ║  Looking for the wizard behind this madness?                 ║
     ║                                                              ║
     ║  👨‍💻 Sergejs Skuratovs                                        ║
     ║  📧 wkuratov@gmail.com                                       ║
     ║  💬 Telegram: @wkuratov                                      ║
-    ║  🐈 Cat Instagram: https://www.instagram.com/symbakot/      ║
+    ║  🐈 Cat Instagram: https://www.instagram.com/symbakot/       ║
     ║                                                              ║
-    ║  Web developer who can make like... anything*               ║
-    ║  *Terms and conditions apply. "Anything" may not include    ║
-    ║   time machines, perpetual motion machines, or getting      ║
-    ║   CSS to work properly in IE6.                              ║
+    ║  Web developer who can make like... anything*                ║
+    ║  *Terms and conditions apply. "Anything" may not include     ║
+    ║   time machines, perpetual motion machines, or getting       ║
+    ║   CSS to work properly in IE6.                               ║
     ╚══════════════════════════════════════════════════════════════╝
     -->
 
@@ -374,6 +374,132 @@
             transform: translate(-50%, -50%) scale(1);
         }
 
+        /* Secret mobile button */
+        .secret-trigger {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 60px;
+            height: 60px;
+            opacity: 0;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            z-index: 100;
+        }
+
+        /* Error popup */
+        .error-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: var(--bg-secondary);
+            border: 2px solid var(--error);
+            border-radius: 8px;
+            padding: 2rem;
+            max-width: 90%;
+            width: 400px;
+            z-index: 9999;
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 0 50px rgba(255, 0, 102, 0.5);
+        }
+
+        .error-popup.active {
+            transform: translate(-50%, -50%) scale(1);
+            animation: glitch 0.3s ease-out;
+        }
+
+        @keyframes glitch {
+            0% {
+                transform: translate(-50%, -50%) scale(1) skew(5deg);
+                filter: hue-rotate(90deg);
+            }
+            25% {
+                transform: translate(-48%, -52%) scale(1.05) skew(-5deg);
+                filter: hue-rotate(-90deg);
+            }
+            50% {
+                transform: translate(-52%, -48%) scale(0.95) skew(3deg);
+                filter: hue-rotate(180deg);
+            }
+            75% {
+                transform: translate(-49%, -51%) scale(1.02) skew(-3deg);
+                filter: hue-rotate(-180deg);
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1) skew(0deg);
+                filter: hue-rotate(0deg);
+            }
+        }
+
+        .error-popup h3 {
+            color: var(--error);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .error-popup .error-code {
+            font-family: monospace;
+            background: rgba(255, 0, 102, 0.1);
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+
+        .error-popup .contact-info {
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+
+        .error-popup .contact-info a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .error-popup .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .error-popup .close-btn:hover {
+            color: var(--error);
+        }
+
+        /* Mobile hint */
+        @media (max-width: 768px) {
+            .logo::after {
+                content: '🔍';
+                position: absolute;
+                top: -10px;
+                right: -30px;
+                font-size: 0.3em;
+                opacity: 0.1;
+                animation: subtle-pulse 3s infinite;
+            }
+
+            /* Subtle glow on error box for mobile */
+            .error-box {
+                animation: subtle-glow 4s infinite;
+            }
+        }
+
+        @keyframes subtle-pulse {
+            0%, 100% { opacity: 0.1; }
+            50% { opacity: 0.3; }
+        }
+
+        @keyframes subtle-glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(255, 0, 102, 0.2); }
+            50% { box-shadow: 0 0 15px rgba(255, 0, 102, 0.3); }
+        }
+
         /* Hidden selection message */
         ::selection {
             background: var(--accent);
@@ -403,6 +529,10 @@
             .features {
                 grid-template-columns: 1fr;
             }
+
+            .mobile-hint {
+                display: inline !important;
+            }
         }
     </style>
 </head>
@@ -411,6 +541,9 @@
     <div class="matrix-bg" id="matrix"></div>
 
     <div class="container">
+        <!-- Secret mobile trigger -->
+        <div class="secret-trigger" onclick="showSecretError()" aria-label="Secret developer contact"></div>
+
         <header class="header">
             <h1 class="logo">NotNull<span class="cursor">_</span></h1>
             <p class="tagline">
@@ -418,8 +551,8 @@
             </p>
         </header>
 
-        <div class="error-box">
-            <h2 class="error-title">Uncaught TypeError: Cannot read property 'null' of null</h2>
+        <div class="error-box" onclick="handleErrorBoxClick(event)">
+            <h2 class="error-title">Uncaught TypeError: Cannot read property 'joke' of null</h2>
             <div class="stack-trace">
                 <div><span class="line-number">1</span> at Object.&lt;anonymous&gt; (life.js:42:13)</div>
                 <div><span class="line-number">2</span> at Module._compile (internal/modules/cjs/loader.js:1063:30)</div>
@@ -451,7 +584,7 @@
         </section>
 
         <div class="cta">
-            <a href="#" class="btn" onclick="handleCTA(event)">npm install notnull</a>
+            <a href="#" class="btn" onclick="handleCTA(event)">npm install hope</a>
             <p style="margin-top: 1rem; color: var(--text-secondary);">
                 <small>Warning: May cause existential dread in production</small>
             </p>
@@ -464,6 +597,7 @@
             <p style="margin-top: 1rem; color: #555;">
                 Press ↑ ↑ ↓ ↓ ← → ← → B A for a surprise
                 <span style="opacity: 0.3;">| Ctrl+Shift+C for contact</span>
+                <span class="mobile-hint" style="display: none; opacity: 0.3;">| Triple tap the logo 👆</span>
             </p>
 
             <!-- Cat support section -->
@@ -509,6 +643,31 @@
         <h3 style="color: var(--accent); margin-bottom: 1rem;">🎉 Achievement Unlocked!</h3>
         <p>You found the Konami code!</p>
         <p style="margin-top: 1rem; color: var(--text-secondary);">Here's your reward: 🍕</p>
+    </div>
+
+    <!-- Secret error popup -->
+    <div class="error-popup" id="errorPopup">
+        <button class="close-btn" onclick="closeSecretError()">×</button>
+        <h3>🚨 Error 418: I'm a teapot</h3>
+        <div class="error-code">
+            <code>
+                Uncaught DeveloperException: Contact not found in /dev/null<br>
+                <span style="color: var(--warning);">    at findDeveloper (reality.js:42)</span><br>
+                <span style="color: var(--warning);">    at Universe.bigBang (inception.js:1)</span>
+            </code>
+        </div>
+        <div class="contact-info">
+            <p><strong>🔧 Debug info:</strong></p>
+            <p>Developer: <span style="color: var(--accent);">Sergejs Skuratovs</span></p>
+            <p>Email: <a href="mailto:wkuratov@gmail.com">wkuratov@gmail.com</a></p>
+            <p>Telegram: <a href="https://t.me/wkuratov" target="_blank">@wkuratov</a></p>
+            <p>Cat's IG: <a href="https://www.instagram.com/symbakot/" target="_blank">@symbakot</a> 🐈</p>
+            <br>
+            <p style="color: var(--text-secondary); font-size: 0.9rem;">
+                <em>"I can make like... anything!"</em><br>
+                <small>* Except this error go away. It's a feature.</small>
+            </p>
+        </div>
     </div>
 
     <script>
@@ -609,12 +768,80 @@
             "console.info('undefined is not a function, but we are!');",
             "console.debug('Found the problem: It's between the keyboard and chair');",
             "console.log('🐈 Cat.prototype.knock = function() { return table.items.filter(item => item.onFloor === true); }');",
-            "console.info('BTW, try typing window.whoMadeThis() or just window.hire 😉');"
+            "console.info('BTW, try typing window.whoMadeThis() or just window.hire 😉');",
+            "console.log('📱 Mobile user? Try triple-tapping the logo!');"
         ];
 
         setInterval(() => {
             console.log(messages[Math.floor(Math.random() * messages.length)]);
         }, 10000);
+
+        // Secret error popup functions
+        function showSecretError() {
+            const popup = document.getElementById('errorPopup');
+            popup.classList.add('active');
+
+            // Log to console for developers
+            console.error('Error 418: I\'m a teapot');
+            console.log('%c🫖 You found the secret mobile easter egg!', 'color: #00ff88; font-size: 16px;');
+
+            // Vibrate on mobile if supported
+            if (navigator.vibrate) {
+                navigator.vibrate([100, 50, 100]);
+            }
+        }
+
+        function closeSecretError() {
+            document.getElementById('errorPopup').classList.remove('active');
+        }
+
+        // Close popup when clicking outside
+        document.addEventListener('click', (e) => {
+            const popup = document.getElementById('errorPopup');
+            if (popup.classList.contains('active') && !popup.contains(e.target) && !e.target.classList.contains('secret-trigger')) {
+                closeSecretError();
+            }
+        });
+
+        // Triple tap easter egg for mobile
+        let tapCount = 0;
+        let tapTimer;
+
+        document.querySelector('.logo').addEventListener('click', (e) => {
+            tapCount++;
+            clearTimeout(tapTimer);
+
+            if (tapCount === 3) {
+                showSecretError();
+                tapCount = 0;
+            }
+
+            tapTimer = setTimeout(() => {
+                tapCount = 0;
+            }, 500);
+        });
+
+        // Error box click handler (mobile easter egg)
+        let errorBoxClicks = 0;
+        let errorBoxTimer;
+
+        function handleErrorBoxClick(e) {
+            // Only on mobile/touch devices
+            if ('ontouchstart' in window || window.innerWidth <= 768) {
+                errorBoxClicks++;
+                clearTimeout(errorBoxTimer);
+
+                if (errorBoxClicks === 5) {
+                    showSecretError();
+                    errorBoxClicks = 0;
+                    console.log('%c🎯 Nice! You found another secret!', 'color: #00ff88; font-size: 14px;');
+                }
+
+                errorBoxTimer = setTimeout(() => {
+                    errorBoxClicks = 0;
+                }, 1000);
+            }
+        }
 
         // Initialize
         createMatrixRain();

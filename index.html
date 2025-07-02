@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NotNull.app - Where undefined is not defined</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --text-primary: #e0e0e0;
+            --text-secondary: #888;
+            --accent: #00ff88;
+            --error: #ff0066;
+            --warning: #ffaa00;
+        }
+
+        body {
+            font-family: 'Fira Code', 'Consolas', monospace;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            cursor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><text y="28" font-size="28" fill="white">_</text></svg>') 16 16, auto;
+        }
+
+        /* Terminal blink cursor */
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        .cursor {
+            animation: blink 1s infinite;
+            color: var(--accent);
+        }
+
+        /* Matrix rain effect */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        .matrix-column {
+            position: absolute;
+            top: -100%;
+            font-size: 20px;
+            color: var(--accent);
+            animation: matrix-fall 10s linear infinite;
+        }
+
+        @keyframes matrix-fall {
+            to {
+                top: 100%;
+            }
+        }
+
+        /* Main container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        .logo {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: bold;
+            background: linear-gradient(45deg, var(--accent), var(--warning), var(--error));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .logo::before {
+            content: '// ';
+            position: absolute;
+            left: -2em;
+            color: var(--text-secondary);
+            font-size: 0.5em;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .tagline .comment {
+            color: #666;
+        }
+
+        /* Error box */
+        .error-box {
+            background: var(--bg-secondary);
+            border: 2px solid var(--error);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 800px;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .error-box::before {
+            content: 'ERROR';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: var(--error);
+            font-size: 0.8rem;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .error-title {
+            color: var(--error);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stack-trace {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+
+        .stack-trace .line-number {
+            color: #555;
+            margin-right: 1rem;
+        }
+
+        .stack-trace .highlight {
+            color: var(--warning);
+        }
+
+        /* Features */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .feature {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            box-shadow: 0 10px 40px rgba(0, 255, 136, 0.2);
+        }
+
+        .feature::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .feature:hover::before {
+            opacity: 0.05;
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature h3 {
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        /* CTA */
+        .cta {
+            text-align: center;
+            margin: 4rem 0;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 3rem;
+            background: var(--accent);
+            color: var(--bg-primary);
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px var(--accent);
+        }
+
+        .btn::before {
+            content: '>';
+            position: absolute;
+            left: -20px;
+            transition: left 0.3s ease;
+        }
+
+        .btn:hover::before {
+            left: 10px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding: 2rem;
+            border-top: 1px solid #333;
+        }
+
+        .console-log {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .console-log .method {
+            color: #4fc3f7;
+        }
+
+        .console-log .string {
+            color: #81c784;
+        }
+
+        /* Cat support section */
+        .cat-support {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            border: 1px dashed #444;
+        }
+
+        .cat-message {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .bmc-button-container {
+            margin: 1.5rem 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .cat-debug {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Style the BMC button */
+        .bmc-button {
+            transition: transform 0.3s ease !important;
+        }
+
+        .bmc-button:hover {
+            transform: scale(1.05) !important;
+        }
+
+        /* Easter egg */
+        .konami {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border: 2px solid var(--accent);
+            border-radius: 8px;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .konami.active {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .logo {
+                font-size: 3rem;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Matrix rain background -->
+    <div class="matrix-bg" id="matrix"></div>
+
+    <div class="container">
+        <header class="header">
+            <h1 class="logo">NotNull<span class="cursor">_</span></h1>
+            <p class="tagline">
+                <span class="comment">// Because undefined behavior is so last year</span>
+            </p>
+        </header>
+
+        <div class="error-box">
+            <h2 class="error-title">Uncaught TypeError: Cannot read property 'null' of null</h2>
+            <div class="stack-trace">
+                <div><span class="line-number">1</span> at Object.&lt;anonymous&gt; (life.js:42:13)</div>
+                <div><span class="line-number">2</span> at Module._compile (internal/modules/cjs/loader.js:1063:30)</div>
+                <div><span class="line-number">3</span> at Object.Module._extensions..js <span class="highlight">(just kidding, we got you covered)</span></div>
+            </div>
+        </div>
+
+        <section class="features">
+            <div class="feature">
+                <div class="feature-icon">🛡️</div>
+                <h3>Null-Safe</h3>
+                <p>We promise your variables will never be null*</p>
+                <p style="font-size: 0.7rem; color: #555; margin-top: 1rem;">*undefined is still on the table though</p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">🚀</div>
+                <h3>Blazingly Fast™</h3>
+                <p>Checks for null in O(1) time, because we just don't</p>
+                <p style="font-size: 0.7rem; color: #555; margin-top: 1rem;">if (!null) return "fast";</p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">🎯</div>
+                <h3>100% Accurate</h3>
+                <p>Works 60% of the time, every time</p>
+                <p style="font-size: 0.7rem; color: #555; margin-top: 1rem;">Math.random() > 0.4 ? "works" : "works";</p>
+            </div>
+        </section>
+
+        <div class="cta">
+            <a href="#" class="btn" onclick="handleCTA(event)">npm install notnull</a>
+            <p style="margin-top: 1rem; color: var(--text-secondary);">
+                <small>Warning: May cause existential dread in production</small>
+            </p>
+        </div>
+
+        <footer class="footer">
+            <div class="console-log">
+                <span class="method">console.log</span>(<span class="string">"Made with 💚 and too much ☕"</span>);
+            </div>
+            <p style="margin-top: 1rem; color: #555;">
+                Press ↑ ↑ ↓ ↓ ← → ← → B A for a surprise
+            </p>
+
+            <!-- Cat support section -->
+            <div class="cat-support">
+                <p class="cat-message">
+                    <span class="comment">// TODO: Feed the cats before they push everything off the desk</span>
+                </p>
+                <div class="bmc-button-container">
+                    <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="kurubik" data-color="#FFDD00" data-emoji="🐈‍⬛" data-font="Cookie" data-text="Buy food for my cats" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+                </div>
+                <p class="cat-debug">
+                    <span style="color: var(--warning);">Warning:</span> Cats may use your donations to buy more keyboards to sit on
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Easter egg -->
+    <div class="konami" id="konami">
+        <h3 style="color: var(--accent); margin-bottom: 1rem;">🎉 Achievement Unlocked!</h3>
+        <p>You found the Konami code!</p>
+        <p style="margin-top: 1rem; color: var(--text-secondary);">Here's your reward: 🍕</p>
+    </div>
+
+    <script>
+        // Matrix rain effect
+        function createMatrixRain() {
+            const matrix = document.getElementById('matrix');
+            const chars = '01!@#$%^&*(){}[]<>?/\\|~`nullundefinedNaN';
+
+            for (let i = 0; i < 20; i++) {
+                const column = document.createElement('div');
+                column.className = 'matrix-column';
+                column.style.left = `${i * 5}%`;
+                column.style.animationDelay = `${Math.random() * 10}s`;
+                column.style.animationDuration = `${10 + Math.random() * 10}s`;
+
+                let text = '';
+                for (let j = 0; j < 50; j++) {
+                    text += chars[Math.floor(Math.random() * chars.length)] + '<br>';
+                }
+                column.innerHTML = text;
+                matrix.appendChild(column);
+            }
+        }
+
+        // CTA handler
+        function handleCTA(e) {
+            e.preventDefault();
+            const btn = e.target;
+            const originalText = btn.textContent;
+            btn.textContent = 'npm ERR! 404 Not Found - GET https://registry.npmjs.org/notnull';
+            btn.style.background = 'var(--error)';
+
+            setTimeout(() => {
+                btn.textContent = 'Just kidding! 😄';
+                btn.style.background = 'var(--warning)';
+
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = 'var(--accent)';
+                }, 2000);
+            }, 2000);
+        }
+
+        // Konami code
+        let konamiCode = [];
+        const konamiPattern = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+
+        document.addEventListener('keydown', (e) => {
+            konamiCode.push(e.key);
+            konamiCode = konamiCode.slice(-10);
+
+            if (konamiCode.join(',') === konamiPattern.join(',')) {
+                document.getElementById('konami').classList.add('active');
+                setTimeout(() => {
+                    document.getElementById('konami').classList.remove('active');
+                }, 3000);
+            }
+        });
+
+        // Random console messages
+        const messages = [
+            "console.warn('This website may contain traces of bugs');",
+            "console.error('Success! Wait, that's not right...');",
+            "console.log('If you're reading this, you're probably a developer');",
+            "console.info('undefined is not a function, but we are!');",
+            "console.debug('Found the problem: It's between the keyboard and chair');",
+            "console.log('🐈 Cat.prototype.knock = function() { return table.items.filter(item => item.onFloor === true); }');"
+        ];
+
+        setInterval(() => {
+            console.log(messages[Math.floor(Math.random() * messages.length)]);
+        }, 10000);
+
+        // Initialize
+        createMatrixRain();
+        console.log('%c Welcome to NotNull! ', 'background: #00ff88; color: #000; font-size: 20px; font-weight: bold;');
+        console.log('%c Where null references go to die ', 'color: #888; font-style: italic;');
+
+        // Cat button hover effect
+        setTimeout(() => {
+            const bmcButton = document.querySelector('.bmc-button');
+            if (bmcButton) {
+                bmcButton.addEventListener('mouseenter', () => {
+                    console.log('%c 🐈 Meow! The cats appreciate your consideration! ', 'background: #FFDD00; color: #000; padding: 5px;');
+                });
+
+                bmcButton.addEventListener('click', () => {
+                    console.log('%c 🐈‍⬛ *Happy purring noises* ', 'color: #FFDD00; font-style: italic;');
+                });
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

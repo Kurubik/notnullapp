@@ -4,6 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NotNull.app - Where undefined is not defined</title>
+
+    <!--
+    ╔══════════════════════════════════════════════════════════════╗
+    ║  Hey there, curious developer! 👋                            ║
+    ║                                                              ║
+    ║  Looking for the wizard behind this madness?                ║
+    ║                                                              ║
+    ║  👨‍💻 Sergejs Skuratovs                                        ║
+    ║  📧 wkuratov@gmail.com                                       ║
+    ║  💬 Telegram: @wkuratov                                      ║
+    ║  🐈 Cat Instagram: https://www.instagram.com/symbakot/      ║
+    ║                                                              ║
+    ║  Web developer who can make like... anything*               ║
+    ║  *Terms and conditions apply. "Anything" may not include    ║
+    ║   time machines, perpetual motion machines, or getting      ║
+    ║   CSS to work properly in IE6.                              ║
+    ╚══════════════════════════════════════════════════════════════╝
+    -->
+
+    <!-- SEO friendly contact metadata -->
+    <meta name="author" content="Sergejs Skuratovs">
+    <meta name="contact" content="wkuratov@gmail.com">
+    <meta property="developer:name" content="Sergejs Skuratovs">
+    <meta property="developer:email" content="wkuratov@gmail.com">
+    <meta property="developer:telegram" content="@wkuratov">
+    <meta property="cats:instagram" content="https://www.instagram.com/symbakot/">
+
+    <!-- Structured data for search engines -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Sergejs Skuratovs",
+        "email": "wkuratov@gmail.com",
+        "jobTitle": "Web Developer",
+        "description": "Can make like anything",
+        "sameAs": [
+            "https://t.me/wkuratov",
+            "https://www.instagram.com/symbakot/"
+        ],
+        "knowsAbout": ["Web Development", "JavaScript", "Cat Management", "Making Anything*"],
+        "brand": {
+            "@type": "Brand",
+            "name": "NotNull.app",
+            "slogan": "Where undefined is not defined"
+        }
+    }
+    </script>
     <style>
         * {
             margin: 0;
@@ -326,6 +374,22 @@
             transform: translate(-50%, -50%) scale(1);
         }
 
+        /* Hidden selection message */
+        ::selection {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+
+        /* Developer contact hidden in CSS */
+        body::before {
+            content: "Developer: Sergejs Skuratovs | Email: wkuratov@gmail.com | Telegram: @wkuratov";
+            position: absolute;
+            left: -9999px;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .container {
@@ -399,6 +463,7 @@
             </div>
             <p style="margin-top: 1rem; color: #555;">
                 Press ↑ ↑ ↓ ↓ ← → ← → B A for a surprise
+                <span style="opacity: 0.3;">| Ctrl+Shift+C for contact</span>
             </p>
 
             <!-- Cat support section -->
@@ -414,6 +479,29 @@
                 </p>
             </div>
         </footer>
+    </div>
+
+    <!--
+    const developer = {
+        name: "Sergejs Skuratovs",
+        email: "wkuratov@gmail.com",
+        telegram: "@wkuratov",
+        catInstagram: "https://www.instagram.com/symbakot/",
+        skills: ["web development", "making anything*", "cat whispering"],
+        canMake: function(thing) {
+            return thing !== "IE6 compatible" && thing !== "time machine"
+                   ? "probably" : "let's discuss over coffee";
+        }
+    };
+    -->
+
+    <!-- Invisible to users, visible to crawlers -->
+    <div style="position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden;">
+        <h2>Contact Sergejs Skuratovs</h2>
+        <p>Email: wkuratov@gmail.com</p>
+        <p>Telegram: @wkuratov</p>
+        <p>Cat Instagram: https://www.instagram.com/symbakot/</p>
+        <p>Web developer who can make like anything (except make IE6 happy)</p>
     </div>
 
     <!-- Easter egg -->
@@ -468,7 +556,35 @@
         let konamiCode = [];
         const konamiPattern = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
 
+        // Contact info shortcut (Ctrl/Cmd + Shift + C)
+        let ctrlPressed = false;
+        let shiftPressed = false;
+
         document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) ctrlPressed = true;
+            if (e.shiftKey) shiftPressed = true;
+
+            // Contact shortcut
+            if (ctrlPressed && shiftPressed && e.key === 'C') {
+                console.clear();
+                console.log(`
+%c
+██╗  ██╗██╗   ██╗██████╗ ██╗   ██╗██████╗ ██╗██╗  ██╗
+██║ ██╔╝██║   ██║██╔══██╗██║   ██║██╔══██╗██║██║ ██╔╝
+█████╔╝ ██║   ██║██████╔╝██║   ██║██████╔╝██║█████╔╝
+██╔═██╗ ██║   ██║██╔══██╗██║   ██║██╔══██╗██║██╔═██╗
+██║  ██╗╚██████╔╝██║  ██║╚██████╔╝██████╔╝██║██║  ██╗
+╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚═╝╚═╝  ╚═╝
+%c📧 wkuratov@gmail.com
+💬 Telegram: @wkuratov
+🐈 Cat IG: instagram.com/symbakot
+🚀 "I can make like... anything!"`,
+                'color: #00ff88; font-size: 8px; line-height: 1',
+                'color: #fff; font-size: 14px; line-height: 1.5'
+                );
+            }
+
+            // Konami code handling
             konamiCode.push(e.key);
             konamiCode = konamiCode.slice(-10);
 
@@ -480,6 +596,11 @@
             }
         });
 
+        document.addEventListener('keyup', (e) => {
+            if (!e.ctrlKey && !e.metaKey) ctrlPressed = false;
+            if (!e.shiftKey) shiftPressed = false;
+        });
+
         // Random console messages
         const messages = [
             "console.warn('This website may contain traces of bugs');",
@@ -487,7 +608,8 @@
             "console.log('If you're reading this, you're probably a developer');",
             "console.info('undefined is not a function, but we are!');",
             "console.debug('Found the problem: It's between the keyboard and chair');",
-            "console.log('🐈 Cat.prototype.knock = function() { return table.items.filter(item => item.onFloor === true); }');"
+            "console.log('🐈 Cat.prototype.knock = function() { return table.items.filter(item => item.onFloor === true); }');",
+            "console.info('BTW, try typing window.whoMadeThis() or just window.hire 😉');"
         ];
 
         setInterval(() => {
@@ -498,6 +620,39 @@
         createMatrixRain();
         console.log('%c Welcome to NotNull! ', 'background: #00ff88; color: #000; font-size: 20px; font-weight: bold;');
         console.log('%c Where null references go to die ', 'color: #888; font-style: italic;');
+
+        // Developer contact easter egg
+        console.log('\n%c 🔍 Found a bug? Need something built? ', 'color: #00ff88; font-weight: bold;');
+        console.log('%c Sergejs Skuratovs - Web Developer ', 'color: #fff; font-size: 14px;');
+        console.log('%c Email: wkuratov@gmail.com ', 'color: #888;');
+        console.log('%c Telegram: @wkuratov ', 'color: #888;');
+        console.log('%c Cat\'s Instagram: https://www.instagram.com/symbakot/ 🐈 ', 'color: #888;');
+        console.log('%c\n"I can make like... anything*" ', 'color: #ffaa00; font-style: italic;');
+        console.log('%c *Except convince your PM that we don\'t need that feature ', 'color: #666; font-size: 10px;');
+
+        // Secret function for the truly curious
+        window.whoMadeThis = function() {
+            const contact = {
+                developer: "Sergejs Skuratovs",
+                email: "wkuratov@gmail.com",
+                telegram: "@wkuratov",
+                catInstagram: "https://www.instagram.com/symbakot/",
+                status: "Can make like anything",
+                disclaimer: "Results may vary. Side effects include clean code and happy users."
+            };
+            console.table(contact);
+            return "🚀 Let's build something awesome together!";
+        };
+
+        // Another secret
+        Object.defineProperty(window, 'hire', {
+            get: function() {
+                console.log('%c\n📧 Drop me a line at wkuratov@gmail.com', 'font-size: 16px; color: #00ff88;');
+                console.log('%c💬 Or ping me on Telegram @wkuratov', 'font-size: 16px; color: #00ff88;');
+                console.log('%c\nP.S. My cats are excellent code reviewers 🐈‍⬛', 'color: #888; font-style: italic;');
+                return "Let's chat!";
+            }
+        });
 
         // Cat button hover effect
         setTimeout(() => {
